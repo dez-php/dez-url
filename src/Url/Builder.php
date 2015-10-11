@@ -97,6 +97,8 @@
                         $this->setLink( str_replace( $search, $replacements, $route->getPseudoPattern() ) );
                         $this->setFounded( true );
 
+                        break;
+
                     }
 
                 }
@@ -129,6 +131,8 @@
 
                         $this->setLink( str_replace( $search, $replacements, $route->getPseudoPattern() ) );
                         $this->setFounded( true );
+
+                        break;
                     }
 
                 }
