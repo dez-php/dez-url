@@ -6,6 +6,7 @@
     use Dez\EventDispatcher\Dispatcher;
     use Dez\Http\Request;
     use Dez\Router\Router;
+    use Dez\Url\Builder;
     use Dez\Url\Uri;
     use Dez\Url\Url;
 
@@ -22,7 +23,12 @@
 
     $di->set( 'request', new Request() );
 
-    $di->set( 'url', new Url() );
+    $di->set( 'url', function() {
+        $url    = new Url();
+        $url->setBasePath( '/dez-url/sandbox/' );
+        $url->setStaticPath( '/dez-url/sandbox/media/' );
+        return $url;
+    } );
 
     /**
      * @var $url Url
@@ -30,19 +36,61 @@
      */
     $router     = $di->get( 'router' );
     $url        = $di->get( 'url' );
-    $url->setBasePath( '/dez-url/sandbox/' );
 
-    $router->add( '/:controller/:auth_driver-:action/:format/:id' );
+    $router->add( '/:hash/:format/stat_download.html', [
+        'controller'    => 'stat',
+        'action'        => 'download_file'
+    ] );
+
+    $router->add( '/admin_panel/:hash/:page.html', [
+        'controller'    => 'admin',
+        'action'        => 'index'
+    ] );
+
+    $router->add( '/:controller/:auth_driver-:action/:format/:id/:back_url' );
     $router->add( '/:controller' );
     $router->add( '/:controller/:action' );
     $router->add( '/:controller/:action/:id' );
     $router->add( '/:controller/:action/:token' );
     $router->add( '/:controller/:action.:format/:module-:do/:params/:statusCode' )->regex( 'format', 'html|json' );
 
-    $route = $router->handle()->getMatchedRoute();
+    header( 'content-type: text/plain' );
 
-//    $uri    = new Uri( 'https://user:pass@github.com:8888/dez-php/dez-url?var=1&test=123qwe#test-anchor' );
+    echo ( new Builder( 'stat:download_file', [
+        'format'    => 'csv',
+        'hash'      => md5(time())
+    ], $router ) )->search() . PHP_EOL; // /219e6c3c6e6c2d015bfb09d749fd5082/csv/stat_download.html
 
-//    $uri    = new Uri( '/user/123' );
+    echo ( new Builder( 'backend:users:full_list', [
+        'format'        => 'json',
+        'do'            => 'export_data',
+        'params'        => 53,
+        'statusCode'    => 500
+    ], $router ) )->search() . PHP_EOL; // /users/full_list.json/backend-export_data/53/500
 
-    var_dump( $url->path( 'product/53' ) );
+    echo ( new Builder( 'admin:index', [
+        'page'      => 'dashboard',
+        'hash'      => md5(time())
+    ], $router ) )->search() . PHP_EOL; // /admin_panel/28726b1ce51b5cb4d500c3ad70e9054e/dashboard.html
+
+    echo ( new Builder( 'products', [ ], $router ) )->search() . PHP_EOL;
+    // /products
+
+    echo ( new Builder( 'products:order', [ ], $router ) )->search() . PHP_EOL;
+    // /products/order
+
+    echo ( new Builder( 'products:order', [
+            'id'    => 53
+        ], $router ) )->search() . PHP_EOL;
+    // /products/order/53
+
+    echo $url->create( 'products:item', [ 'id' => 53, ], [ 'order_id' => 341, ] ) . PHP_EOL;
+    // /dez-url/sandbox/products/item/53?order_id=341
+
+    echo $url->create( 'stat:download_file', [
+            'format'    => 'csv',
+            'hash'      => md5(time())
+        ], [ 'go' => 'dashboard', ] ) . PHP_EOL;
+    // /dez-url/sandbox/3784bb74f03cf1ca05600e5a7ddb8103/csv/stat_download.html?go=dashboard
+
+

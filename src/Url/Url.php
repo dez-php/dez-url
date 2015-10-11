@@ -78,6 +78,15 @@
             return $this;
         }
 
+        public function create( $macros, array $params = [], array $query = [] ) {
+            $builder    = new Builder( $macros, $params, $this->getRouter() );
+            if( $builder->search() ) {
+                return $this->path( $builder->getLink(), $query );
+            } else {
+                return null;
+            }
+        }
+
         public function path( $uri = '', array $query = [] ) {
             $uri    = ltrim( $uri, '/' );
             $uri    = "{$this->getBasePath()}{$uri}";
