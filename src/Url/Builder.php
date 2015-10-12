@@ -122,7 +122,7 @@
 
                     $isEquals       = ( count( array_diff( $matches, $route->getMatches() ) ) === 0 );
 
-                    if( $isEquals && count( $route->getMatches() ) > 0 ) {
+                    if( $isEquals && count( $route->getMatches() ) > 0 && count( $parameters ) > 0 ) {
 
                         $replacements   = array_values( $parameters );
                         $search         = array_map( function( $name ) {

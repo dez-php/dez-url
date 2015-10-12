@@ -47,10 +47,14 @@
         'action'        => 'index'
     ] );
 
+    $router->add( '/:action/:id/product.html', [
+        'controller'    => 'products',
+    ] );
+
     $router->add( '/:controller/:auth_driver-:action/:format/:id/:back_url' );
     $router->add( '/:controller' );
     $router->add( '/:controller/:action' );
-    $router->add( '/:controller/:action/:id' );
+//    $router->add( '/:controller/:action/:id' );
     $router->add( '/:controller/:action/:token' );
     $router->add( '/:controller/:action.:format/:module-:do/:params/:statusCode' )->regex( 'format', 'html|json' );
 
