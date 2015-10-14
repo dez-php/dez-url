@@ -86,7 +86,7 @@
          */
         public function create( $macros, array $params = [], array $query = [] ) {
             $builder    = new Builder( $macros, $params, $this->getRouter() );
-            if( $builder->search() ) {
+            if( $builder->make() ) {
                 return $this->path( $builder->getLink(), $query );
             } else {
                 return null;
@@ -118,10 +118,10 @@
         /**
          * @param string $path
          * @param array $query
-         * @param bool|false $fragment
+         * @param null|string $fragment
          * @return string
          */
-        public function full( $path  = '', array $query = [], $fragment = false ) {
+        public function full( $path  = '', array $query = [], $fragment = null ) {
             $path       = ltrim( $path, '/' );
             $basepath   = rtrim( $this->getBasePath(), '/' );
 
@@ -130,7 +130,7 @@
                 ->setHost( $this->request->getServerHttp( 'host' ) )
                 ->setQueryArray( $query );
 
-            if( $fragment !== false ) {
+            if( $fragment !== null ) {
                 $uri->setFragment( ltrim( $fragment, '#' ) );
             }
 

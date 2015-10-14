@@ -66,7 +66,7 @@
         /**
          * @return boolean
          */
-        public function search() {
+        public function make() {
             if( $this->normalSearch()->hardSearch()->isFounded() ) {
                 return $this->getLink();
             }
@@ -86,7 +86,7 @@
                 ) {
 
                     if( count( array_diff( $route->getMacrosNames(), array_keys( $this->getParameters() ) ) ) === 0 ) {
-                        $this->make( $route, $this->getParameters() );
+                        $this->makeLink( $route, $this->getParameters() );
                         break;
                     }
 
@@ -112,7 +112,7 @@
                     $isEquals       = ( count( array_diff( $matches, $route->getMatches() ) ) === 0 );
 
                     if( $isEquals && count( $route->getMatches() ) > 0 && count( $parameters ) > 0 ) {
-                        $this->make( $route, $parameters );
+                        $this->makeLink( $route, $parameters );
                         break;
                     }
 
@@ -128,13 +128,19 @@
          * @param array $parameters
          * @return $this
          */
-        protected function make( Route $route, array $parameters = [] ) {
-            $replacements   = array_values( $parameters );
-            $search         = array_map( function( $name ) {
-                return ":$name";
-            }, array_keys( $parameters ) );
+        protected function makeLink( Route $route, array $parameters = [] ) {
+            $link   = $route->getPseudoPattern();
 
-            $this->setLink( str_replace( $search, $replacements, $route->getPseudoPattern() ) );
+            if( count( $parameters ) > 0 ) {
+                $replacements   = array_values( $parameters );
+                $search         = array_map( function( $name ) {
+                    return ":$name";
+                }, array_keys( $parameters ) );
+
+                $link   = str_replace( $search, $replacements, $link );
+            }
+
+            $this->setLink( $link );
             $this->setFounded( true );
 
             return $this;

@@ -63,29 +63,29 @@
     echo ( new Builder( 'stat:download_file', [
         'format'    => 'csv',
         'hash'      => md5(time())
-    ], $router ) )->search() . PHP_EOL; // /219e6c3c6e6c2d015bfb09d749fd5082/csv/stat_download.html
+    ], $router ) )->make() . PHP_EOL; // /219e6c3c6e6c2d015bfb09d749fd5082/csv/stat_download.html
 
     echo ( new Builder( 'backend:users:full_list', [
         'format'        => 'json',
         'do'            => 'export_data',
         'params'        => 53,
         'statusCode'    => 500
-    ], $router ) )->search() . PHP_EOL; // /users/full_list.json/backend-export_data/53/500
+    ], $router ) )->make() . PHP_EOL; // /users/full_list.json/backend-export_data/53/500
 
     echo ( new Builder( 'admin:index', [
         'page'      => 'dashboard',
         'hash'      => md5(time())
-    ], $router ) )->search() . PHP_EOL; // /admin_panel/28726b1ce51b5cb4d500c3ad70e9054e/dashboard.html
+    ], $router ) )->make() . PHP_EOL; // /admin_panel/28726b1ce51b5cb4d500c3ad70e9054e/dashboard.html
 
-    echo ( new Builder( 'products', [ ], $router ) )->search() . PHP_EOL;
+    echo ( new Builder( 'products', [ ], $router ) )->make() . PHP_EOL;
     // /products
 
-    echo ( new Builder( 'products:order', [ ], $router ) )->search() . PHP_EOL;
+    echo ( new Builder( 'products:order', [ ], $router ) )->make() . PHP_EOL;
     // /products/order
 
     echo ( new Builder( 'products:order', [
             'id'    => 53
-        ], $router ) )->search() . PHP_EOL;
+        ], $router ) )->make() . PHP_EOL;
     // /products/order/53
 
     echo $url->create( 'products:item', [ 'id' => 53, ], [ 'order_id' => 341, ] ) . PHP_EOL;
