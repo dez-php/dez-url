@@ -2,6 +2,7 @@
 
     namespace Dez\Url;
 
+    use Dez\Router\Route;
     use Dez\Router\Router;
     use Dez\Url\Builder\BuilderException;
 
@@ -80,25 +81,13 @@
             foreach( $this->getRouter()->getRoutes() as $route ) {
 
                 if(
-                    count( $route->getMatches() ) === 0
-                    && count( $route->getMacrosNames() ) > 0
+                    count( $route->getMacrosNames() ) > 0
                     && count( $route->getMacrosNames() ) === count( $this->getParameters() )
                 ) {
 
                     if( count( array_diff( $route->getMacrosNames(), array_keys( $this->getParameters() ) ) ) === 0 ) {
-
-                        $parameters     = array_map( function( $item ) {
-                            return ":$item";
-                        }, array_flip( $this->getParameters() ) );
-
-                        $search         = array_values( $parameters );
-                        $replacements   = array_keys( $parameters );
-
-                        $this->setLink( str_replace( $search, $replacements, $route->getPseudoPattern() ) );
-                        $this->setFounded( true );
-
+                        $this->make( $route, $this->getParameters() );
                         break;
-
                     }
 
                 }
@@ -123,21 +112,30 @@
                     $isEquals       = ( count( array_diff( $matches, $route->getMatches() ) ) === 0 );
 
                     if( $isEquals && count( $route->getMatches() ) > 0 && count( $parameters ) > 0 ) {
-
-                        $replacements   = array_values( $parameters );
-                        $search         = array_map( function( $name ) {
-                            return ":$name";
-                        }, array_keys( $parameters ) );
-
-                        $this->setLink( str_replace( $search, $replacements, $route->getPseudoPattern() ) );
-                        $this->setFounded( true );
-
+                        $this->make( $route, $parameters );
                         break;
                     }
 
                 }
 
             }
+
+            return $this;
+        }
+
+        /**
+         * @param Route $route
+         * @param array $parameters
+         * @return $this
+         */
+        protected function make( Route $route, array $parameters = [] ) {
+            $replacements   = array_values( $parameters );
+            $search         = array_map( function( $name ) {
+                return ":$name";
+            }, array_keys( $parameters ) );
+
+            $this->setLink( str_replace( $search, $replacements, $route->getPseudoPattern() ) );
+            $this->setFounded( true );
 
             return $this;
         }

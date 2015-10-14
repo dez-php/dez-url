@@ -94,14 +94,47 @@
         }
 
         /**
-         * @param string $uri
+         * @param string $path
          * @param array $query
          * @return string
          */
-        public function path( $uri = '', array $query = [] ) {
-            $uri    = ltrim( $uri, '/' );
-            $uri    = "{$this->getBasePath()}{$uri}";
-            return ( new Uri( $uri ) )->setQueryArray( $query )->local();
+        public function path( $path = '', array $query = [] ) {
+            $path       = ltrim( $path, '/' );
+            $basepath   = rtrim( $this->getBasePath(), '/' );
+            return ( new Uri( "$basepath/$path" ) )->setQueryArray( $query )->local();
+        }
+
+        /**
+         * @param string $path
+         * @param array $query
+         * @return string
+         */
+        public function staticPath( $path = '', array $query = [] ) {
+            $path       = ltrim( $path, '/' );
+            $staticpath = rtrim( $this->getStaticPath(), '/' );
+            return ( new Uri( "$staticpath/$path" ) )->local();
+        }
+
+        /**
+         * @param string $path
+         * @param array $query
+         * @param bool|false $fragment
+         * @return string
+         */
+        public function full( $path  = '', array $query = [], $fragment = false ) {
+            $path       = ltrim( $path, '/' );
+            $basepath   = rtrim( $this->getBasePath(), '/' );
+
+            $uri        = ( new Uri( "$basepath/$path" ) )
+                ->setSchema( $this->request->getSchema() )
+                ->setHost( $this->request->getServerHttp( 'host' ) )
+                ->setQueryArray( $query );
+
+            if( $fragment !== false ) {
+                $uri->setFragment( ltrim( $fragment, '#' ) );
+            }
+
+            return $uri->full();
         }
 
     }

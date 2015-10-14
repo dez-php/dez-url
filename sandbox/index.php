@@ -97,4 +97,10 @@
         ], [ 'go' => 'dashboard', ] ) . PHP_EOL;
     // /dez-url/sandbox/3784bb74f03cf1ca05600e5a7ddb8103/csv/stat_download.html?go=dashboard
 
+    echo $url->staticPath( 'js/jquery.min.js' ) . PHP_EOL;
+    // /dez-url/sandbox/media/js/jquery.min.js
+
+    echo $url->full( 'product/5378', [ 'customer_id' => 8451 ], 'tab-order' ) . PHP_EOL;
+    // http://my.local/dez-url/sandbox/product/5378?customer_id=8451#tab-order
+
 
