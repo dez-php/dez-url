@@ -47,6 +47,11 @@
         'action'        => 'index'
     ] );
 
+    $router->add( '/:article_id-:slug', [
+        'controller'    => 'articles',
+        'action'        => 'item'
+    ] )->regex('article_id', '\d+')->regex('slug', '\w+');
+
     $router->add( '/:action/:id/product.html', [
         'controller'    => 'products',
     ] );
@@ -102,5 +107,11 @@
 
     echo $url->full( 'product/5378', [ 'customer_id' => 8451 ], 'tab-order' ) . PHP_EOL;
     // http://my.local/dez-url/sandbox/product/5378?customer_id=8451#tab-order
+
+    echo ( new Builder( 'articles:item', [
+            'article_id'    => 53,
+            'slug' => 'hello-world-dude'
+        ], $router ) )
+            ->make() . PHP_EOL;
 
 
