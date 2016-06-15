@@ -80,6 +80,29 @@ class Url extends Injectable
     }
 
     /**
+     * @param string $path
+     * @param array $query
+     * @param string $fragment
+     * @return string
+     */
+    public function full(string $path, array $query = [], string $fragment) : string
+    {
+        $path = ltrim($path, '/');
+        $basepath = rtrim($this->getBasePath(), '/');
+
+        $uri = (new Uri("$basepath/$path"))
+            ->setSchema($this->request->getSchema())
+            ->setHost($this->request->getServerHttp('host'))
+            ->setQueryArray($query);
+
+        if ($fragment !== null) {
+            $uri->setFragment(ltrim($fragment, '#'));
+        }
+
+        return $uri->full();
+    }
+
+    /**
      * @return string
      */
     public function getBasePath() : string
@@ -128,29 +151,6 @@ class Url extends Injectable
         $this->staticPath = $staticPath;
 
         return $this;
-    }
-
-    /**
-     * @param string $path
-     * @param array $query
-     * @param string $fragment
-     * @return string
-     */
-    public function full(string $path, array $query = [], string $fragment) : string
-    {
-        $path = ltrim($path, '/');
-        $basepath = rtrim($this->getBasePath(), '/');
-
-        $uri = (new Uri("$basepath/$path"))
-            ->setSchema($this->request->getSchema())
-            ->setHost($this->request->getServerHttp('host'))
-            ->setQueryArray($query);
-
-        if ($fragment !== null) {
-            $uri->setFragment(ltrim($fragment, '#'));
-        }
-
-        return $uri->full();
     }
 
 }
