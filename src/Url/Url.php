@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Dez\Url;
 
 use Dez\DependencyInjection\Injectable;
@@ -42,14 +44,6 @@ class Url extends Injectable
     }
 
     /**
-     * @return Router
-     */
-    public function getRouter() : Router
-    {
-        return $this->router;
-    }
-
-    /**
      * @param string $macros
      * @param array $params
      * @param array $query
@@ -67,6 +61,14 @@ class Url extends Injectable
     }
 
     /**
+     * @return Router
+     */
+    public function getRouter() : Router
+    {
+        return $this->router;
+    }
+
+    /**
      * @param string $path
      * @param array $query
      * @return string
@@ -74,9 +76,28 @@ class Url extends Injectable
     public function path(string $path, array $query = []) : string
     {
         $path = ltrim($path, '/');
-        $basepath = rtrim($this->getBasePath(), '/');
+        $basePath = rtrim($this->getBasePath(), '/');
 
-        return (new Uri("$basepath/$path"))->setQueryArray($query)->local();
+        return (new Uri("$basePath/$path"))->setQueryArray($query)->local();
+    }
+
+    /**
+     * @return string
+     */
+    public function getBasePath() : string
+    {
+        return $this->basePath;
+    }
+
+    /**
+     * @param string $basePath
+     * @return Url
+     */
+    public function setBasePath(string $basePath) : self
+    {
+        $this->basePath = $basePath;
+
+        return $this;
     }
 
     /**
@@ -100,25 +121,6 @@ class Url extends Injectable
         }
 
         return $uri->full();
-    }
-
-    /**
-     * @return string
-     */
-    public function getBasePath() : string
-    {
-        return $this->basePath;
-    }
-
-    /**
-     * @param string $basePath
-     * @return Url
-     */
-    public function setBasePath(string $basePath) : static
-    {
-        $this->basePath = $basePath;
-
-        return $this;
     }
 
     /**
@@ -146,7 +148,7 @@ class Url extends Injectable
      * @param string $staticPath
      * @return Url
      */
-    public function setStaticPath(string $staticPath) : static
+    public function setStaticPath(string $staticPath) : self
     {
         $this->staticPath = $staticPath;
 
