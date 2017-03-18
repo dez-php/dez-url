@@ -116,7 +116,7 @@ class Url extends Injectable
       $params = $queryParameters;
     }
 
-    return $params;
+    return array_filter($params);;
   }
   
   /**
