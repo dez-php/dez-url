@@ -82,6 +82,7 @@ class Builder
   protected function normalSearch()
   {
     foreach ($this->getRouter()->getRoutes() as $route) {
+      $route->handleUri();
       if (
         count($route->getMacrosNames()) > 0
         && count($route->getMacrosNames()) === count($this->getParameters())
